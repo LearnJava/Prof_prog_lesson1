@@ -1,4 +1,4 @@
-package ru.konstantin.prof_prog_lesson1.presentation.presentation
+package ru.konstantin.prof_prog_lesson1.presentation
 
 import android.app.Activity
 import android.content.Context

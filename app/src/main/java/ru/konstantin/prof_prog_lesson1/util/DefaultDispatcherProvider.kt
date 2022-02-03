@@ -1,6 +1,5 @@
 package ru.konstantin.prof_prog_lesson1.util
 
-import ru.konstantin.prof_prog_lesson1.util.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 

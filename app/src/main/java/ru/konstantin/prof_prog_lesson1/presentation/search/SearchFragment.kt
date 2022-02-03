@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import ru.konstantin.prof_prog_lesson1.R
 import ru.konstantin.prof_prog_lesson1.databinding.FragmentSearchBinding
 import ru.konstantin.prof_prog_lesson1.presentation.search.adapter.SearchAdapter
-import ru.konstantin.prof_prog_lesson1.presentation.presentation.clearFocus
-import ru.konstantin.prof_prog_lesson1.presentation.presentation.hideKeyboard
+import ru.konstantin.prof_prog_lesson1.presentation.clearFocus
+import ru.konstantin.prof_prog_lesson1.presentation.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

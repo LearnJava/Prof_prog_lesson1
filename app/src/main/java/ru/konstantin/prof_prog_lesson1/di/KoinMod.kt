@@ -1,5 +1,6 @@
 package ru.konstantin.prof_prog_lesson1.di
 
+import kotlinx.coroutines.FlowPreview
 import ru.konstantin.prof_prog_lesson1.data.api.TranslatorAPI
 import ru.konstantin.prof_prog_lesson1.data.mappers.DataModelMapper
 import ru.konstantin.prof_prog_lesson1.data.mappers.MeaningsMapper
@@ -13,6 +14,7 @@ import ru.konstantin.prof_prog_lesson1.util.DispatcherProvider
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
+@FlowPreview
 val application = module {
 
     factory { TranslationMapper() }
