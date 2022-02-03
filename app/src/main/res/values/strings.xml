@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Translators</string>
+    <string name="app_name">Test Translator</string>
 
 
     <string name="search_icon_content_description">поиск</string>
