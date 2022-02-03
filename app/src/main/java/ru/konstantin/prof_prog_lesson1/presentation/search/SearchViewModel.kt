@@ -1,56 +1,63 @@
 package ru.konstantin.prof_prog_lesson1.presentation.search
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import ru.konstantin.prof_prog_lesson1.domain.model.DataModel
-import ru.konstantin.prof_prog_lesson1.domain.repositories.Repository
-import ru.konstantin.prof_prog_lesson1.util.SchedulersProvider
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.disposables.Disposable
-import io.reactivex.rxjava3.observers.DisposableSingleObserver
-import javax.inject.Inject
+import ru.konstantin.prof_prog_lesson1.domain.repository.Repository
+import ru.konstantin.prof_prog_lesson1.util.DispatcherProvider
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
-class SearchViewModel @Inject constructor(
+
+class SearchViewModel(
     private val repository: Repository<DataModel>,
-    private val schedulersProvider: SchedulersProvider
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
+     private val _viewState = MutableStateFlow<SearchViewState>(SearchViewState.CallToAction)
 
-    private val _viewState = MutableLiveData<SearchViewState>(SearchViewState.CallToAction)
-
-    val viewState: LiveData<SearchViewState> get() = _viewState
+    val viewState: StateFlow<SearchViewState> get() = _viewState.asStateFlow()
 
     fun getData(word: String, isOnline: Boolean) {
-        compositeDisposable.add(
+
+        cancelJob()
+
+        viewModelScope.launch {
+
+            setLoadingState()
+
             repository.getData(word, isOnline)
-                .subscribeOn(schedulersProvider.io())
-                .observeOn(schedulersProvider.main())
-                .doOnSubscribe { doOnSubscribe().invoke(it) }
-                .subscribeWith(getObserver())
-        )
+                .flowOn(dispatcherProvider.io())
+                .catch { handleError(it) }
+                .collect {
+                    if (it.isEmpty()) setEmptyResultState()
+                    else setSuccessState(it)
+                }
+        }
     }
 
-    private fun doOnSubscribe(): (Disposable) -> Unit =
-        { _viewState.value = SearchViewState.Loading }
+    private suspend fun setSuccessState(data: List<DataModel>) {
+        _viewState.emit(SearchViewState.Success(data))
+    }
 
-    private fun getObserver(): DisposableSingleObserver<List<DataModel>> =
-        object : DisposableSingleObserver<List<DataModel>>() {
-            override fun onSuccess(data: List<DataModel>) {
-                if (data.isEmpty()) {
-                    _viewState.value = SearchViewState.EmptyResult
-                } else {
-                    _viewState.value = SearchViewState.Success(data)
-                }
-            }
+    private suspend fun setLoadingState() {
+        _viewState.emit(SearchViewState.Loading)
+    }
 
-            override fun onError(e: Throwable) {
-                _viewState.value = SearchViewState.Error(e)
-            }
-        }
+    private suspend fun setEmptyResultState() {
+        _viewState.emit(SearchViewState.EmptyResult)
+    }
+
+    private suspend fun handleError(error: Throwable) {
+        _viewState.emit(SearchViewState.Error(error))
+    }
+
+    private fun cancelJob() {
+        viewModelScope.coroutineContext.cancelChildren()
+    }
 
     override fun onCleared() {
-        compositeDisposable.dispose()
+        cancelJob()
     }
 }

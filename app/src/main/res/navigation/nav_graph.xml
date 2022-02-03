@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="ru.konstantin.prof_prog_lesson1.presentation.search.SearchFragment"
+        android:name="com.example.translators.presentation.search.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
 </navigation>

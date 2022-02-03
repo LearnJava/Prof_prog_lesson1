@@ -1,4 +1,4 @@
-package com.example.translators.presentation.presentation
+package ru.konstantin.prof_prog_lesson1.presentation.presentation
 
 import android.app.Activity
 import android.content.Context
