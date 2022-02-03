@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.konstantin.prof_prog_lesson1.presentation.presentation.search.SearchFragment">
+    tools:context="ru.konstantin.prof_prog_lesson1.presentation.search.SearchFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_input_layout"
