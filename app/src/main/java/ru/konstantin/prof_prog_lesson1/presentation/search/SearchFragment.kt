@@ -1,34 +1,27 @@
 package ru.konstantin.prof_prog_lesson1.presentation.search
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.example.translators.R
-import com.example.translators.databinding.FragmentSearchBinding
-import ru.konstantin.prof_prog_lesson1.application.App
-import ru.konstantin.prof_prog_lesson1.presentation.adapter.SearchAdapter
-import com.example.translators.presentation.presentation.clearFocus
-import com.example.translators.presentation.presentation.hideKeyboard
+import ru.konstantin.prof_prog_lesson1.R
+import ru.konstantin.prof_prog_lesson1.databinding.FragmentSearchBinding
+import ru.konstantin.prof_prog_lesson1.presentation.search.adapter.SearchAdapter
+import ru.konstantin.prof_prog_lesson1.presentation.clearFocus
+import ru.konstantin.prof_prog_lesson1.presentation.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
-import javax.inject.Inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var presenter: SearchViewModel
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel: SearchViewModel by viewModels { viewModelFactory }
+    private val viewModel: SearchViewModel by viewModel()
 
     private val adapter by lazy { SearchAdapter() }
 
@@ -65,19 +58,19 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        App.component.inject(this)
-
         setupUI()
     }
 
     private fun setupUI() {
-        observeViewModel()
+        observeViewStateUpdates()
         initRecycler()
         setupSearchListener()
     }
 
-    private fun observeViewModel() =
-        viewModel.viewState.observe(viewLifecycleOwner) { updateUI(it) }
+    private fun observeViewStateUpdates() =
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.viewState.collect { updateUI(it) }
+        }
 
     private fun initRecycler() {
         binding.resultRecycler.adapter = adapter
@@ -125,6 +118,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private fun showErrorSnackbar() =
         errorSnackbar.show()
+
 
     private fun hideErrorSnackbar() =
         errorSnackbar.dismiss()

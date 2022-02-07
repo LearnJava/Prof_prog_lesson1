@@ -1,7 +1,7 @@
-package ru.konstantin.prof_prog_lesson1.presentation.adapter
+package ru.konstantin.prof_prog_lesson1.presentation.search.adapter
 
 import androidx.recyclerview.widget.RecyclerView
-import com.example.translators.databinding.FragmentSearchListItemBinding
+import ru.konstantin.prof_prog_lesson1.databinding.FragmentSearchListItemBinding
 import ru.konstantin.prof_prog_lesson1.domain.model.DataModel
 
 class SearchViewHolder(

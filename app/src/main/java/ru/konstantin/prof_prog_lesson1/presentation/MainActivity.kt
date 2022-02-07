@@ -2,7 +2,7 @@ package ru.konstantin.prof_prog_lesson1.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.translators.R
+import ru.konstantin.prof_prog_lesson1.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

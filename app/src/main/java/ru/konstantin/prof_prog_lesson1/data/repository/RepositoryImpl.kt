@@ -3,25 +3,27 @@ package ru.konstantin.prof_prog_lesson1.data.repository
 import ru.konstantin.prof_prog_lesson1.data.api.TranslatorAPI
 import ru.konstantin.prof_prog_lesson1.data.mappers.DataModelMapper
 import ru.konstantin.prof_prog_lesson1.domain.model.DataModel
-import ru.konstantin.prof_prog_lesson1.domain.repositories.Repository
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Single
-import javax.inject.Inject
+import ru.konstantin.prof_prog_lesson1.domain.repository.Repository
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
-class RepositoryImpl @Inject constructor(
-    private val translatorAPI: TranslatorAPI,
+
+@FlowPreview
+class RepositoryImpl(
+    private val translatorApi: TranslatorAPI,
     private val dataModelMapper: DataModelMapper
 ) : Repository<DataModel> {
 
-    override fun getData(word: String, fromRemoteSource: Boolean):  Single<List<DataModel>> {
+    override suspend fun getData(word: String, fromRemoteSource: Boolean): Flow<List<DataModel>> {
         return if (fromRemoteSource) {
-            translatorAPI.search(word)
-                .flatMapObservable { Observable.fromIterable(it) }
-                .filter { !it.meanings.isNullOrEmpty() }
-                .toList()
-                .map { dataModelMapper.toDomain(it) }
+            flowOf(
+                translatorApi.searchAsync(word).await()
+                    .filter { !it.meanings.isNullOrEmpty() }
+                    .map { dataModelMapper.toDomain(it) }
+            )
         } else {
-            TODO("wait db")
+            TODO("Room will be here")
         }
     }
 }
